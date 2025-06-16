@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('sod_qty_ord')->nullable();
             $table->string('pt_um')->nullable();
             $table->string('so_ship')->nullable();
-            $table->string('net_weight')->nullable();
+            $table->float('net_weight')->nullable();
+            $table->float('gross_weight')->nullable();
             $table->timestamps();
 
             $table->foreign('sod_nbr')->references('so_nbr')->on('export_docs')->onDelete('cascade');

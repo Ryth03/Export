@@ -29,6 +29,7 @@ use App\Http\Controllers\QAD\ApproverController;
 use App\Http\Controllers\QAD\CostCenterController;
 use App\Http\Controllers\QAD\CustomerInvoiceController;
 use App\Http\Controllers\QAD\EmployeeController;
+use App\Http\Controllers\QAD\Export\ExportDocController;
 use App\Http\Controllers\QAD\InventoryController;
 use App\Http\Controllers\QAD\ItemController;
 use App\Http\Controllers\QAD\ProductionController;
@@ -70,6 +71,9 @@ Route::get('/', function () {
 
 
 Route::middleware('auth')->group(function () {
+    /* Export */
+    Route::get('/dashboard-export', [ExportDocController::class, 'index'])->name('dashboard.export');
+    Route::POST('/export', [ExportDocController::class, 'getSoExport'])->name('export.get');
     /* Dashboard */
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard-finance', [DashboardController::class, 'index-finance'])->name('dashboard-finance');

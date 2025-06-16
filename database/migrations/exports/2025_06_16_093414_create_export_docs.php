@@ -27,6 +27,17 @@ return new class extends Migration
             $table->string('ad_fax')->nullable();
             $table->string('ad_fax2')->nullable();
             $table->string('ship_to_name')->nullable();
+            $table->string('commodity')->nullable();
+            $table->string('marking')->nullable();
+            $table->string('certificate_no')->nullable();
+            $table->string('total_gross')->nullable();
+            $table->string('total_net')->nullable();
+            $table->string('measurement')->nullable();
+            $table->string('container_no')->nullable();
+            $table->string('batch_no')->nullable();
+            $table->string('etd')->nullable();
+            $table->string('eta')->nullable();
+            $table->string('stuffing')->nullable();
             $table->timestamps();
         });
     }

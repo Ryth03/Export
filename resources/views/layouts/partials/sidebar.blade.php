@@ -12,16 +12,10 @@
                 style="font-size: 18px;"><i data-feather="home" style="width: 18px; height: 18px;"><span
                         class="path1"></span><span class="path2"></span></i>Dashboard</a>
             <ul>
-                <li><a href="{{ route('dashboard.dashboardProduction') }}"
-                        class="{{ request()->is('dashboard/dashboard-production') ? 'current' : '' }}"><i
+                <li><a href="{{ route('dashboard.export') }}"
+                        class="{{ request()->is('dashboard/dashboard-export') ? 'current' : '' }}"><i
                             class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dashboard
-                        Produksi</a></li>
-                <li><a href="{{ route('dashboard.dashboardSales') }}"
-                        class="{{ request()->is('dashboard/dashboard-sales') ? 'current' : '' }}"><i class="icon-Commit"><span
-                                class="path1"></span><span class="path2"></span></i>Dashboard Pengiriman</a></li>
-                <li><a href="{{ route('dashboard.dashboardWarehouse') }}"
-                        class="{{ request()->is('dashboard/dashboard-warehouse') ? 'current' : '' }}"><i class="icon-Commit"><span
-                                class="path1"></span><span class="path2"></span></i>Dashboard Gudang</a></li>
+                        Export</a></li>
             </ul>
         </li>
         <li><a href="#" style="font-size: 18px;" class="{{ request()->is('dashboard/*') ? 'current' : '' }}"><i

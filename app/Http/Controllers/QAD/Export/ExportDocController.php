@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class ExportDocController extends Controller
 {
+    public function index()
+    {
+        return view('page.dataDashboard.export-index');
+    }
 
     // GET DATA EXPORT
     private function httpHeader($req)
@@ -24,8 +28,15 @@ class ExportDocController extends Controller
     }
 
 
-    public function getSoExport($soNbr)
-    {
+    public function getSoExport(Request $request)
+    {   
+        $soNbr = $request->input('soNbr');
+        if(!$soNbr)
+        {
+            return response()->json("Tidak ada nomor");
+        }
+        $soNbr = "ESM".$soNbr;
+
         $qxUrl = 'http://smii.qad:24079/wsa/smiiwsa';
         $timeout = 10;
         $domain = 'SMII';
@@ -117,6 +128,8 @@ class ExportDocController extends Controller
             }
         }
 
+        $exportDoc = ExportDoc::with('details')->where('so_nbr', $so_nbr)->first();
+        return response()->json($exportDoc);
         session(['toastMessage' => 'Data berhasil disimpan. Jumlah detail baru: ' . $jumlahItemBaru, 'toastType' => 'success']);
         return redirect()->back();
     }
