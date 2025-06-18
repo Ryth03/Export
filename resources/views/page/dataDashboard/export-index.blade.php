@@ -18,11 +18,10 @@
                 min-height: 100vh;
             }
 
-            .footer-background{
-                background-image: url('/assets/export/footer.png');
-                background-repeat: no-repeat;
-                background-size: 100% auto;
-                min-height: 100vh;
+            
+            footer img {
+                width: 100%;
+                height: auto;
             }
 
             /* Hilangkan panah spinner di input number untuk semua browser utama */
@@ -67,109 +66,116 @@
         <header class="w-72 h-32 mr-auto mb-5">
             <img src="{{ asset('assets/export/logo.png')  }}">
         </header>
-        <main class="">    
-            <div class="flex flex-col items-center">
-                <h2 class="text-2xl">SHIPPING INSTRUCTION</h2>
-                <div class="text-xl">
-                    <span>ESM/</span>
-                    <input id="no"
-                        type="number" 
-                        value="1393" 
-                        pattern="[0-9]*"
-                        class="w-[40px] border-0 border-b border-black text-center bg-transparent focus:outline-none p-0 leading-tight no-spinner text-xl">
-                    <span>/04/2025</span>
-                </div>
-                <div>
-                    <div>
-                        <p>We request you to book shipment on our behalf with the following specifications.</p>
+        <main class="">
+            <form action="{{ route('export.store') }}" method="POST" id="exportForm" class="w-full h-full flex flex-col items-center justify-center">
+                @csrf    
+                <div class="flex flex-col items-center">
+                    <h2 class="text-2xl">SHIPPING INSTRUCTION</h2>
+                    <div class="text-xl">
+                        <span>ESM/</span>
+                        <input id="no" name="no"
+                            type="number" 
+                            value="1393" 
+                            pattern="[0-9]*"
+                            class="w-[40px] border-0 border-b border-black text-center bg-transparent focus:outline-none p-0 leading-tight no-spinner text-xl">
+                        <span>/04/2025</span>
                     </div>
                     <div>
-                        <table id="shippingTable">
-                            <tbody>
-                                <tr>
-                                    <td>Shipped by</td>
-                                    <td>:</td>
-                                    <td id="shipped"></td>
-                                </tr>
-                                <tr>
-                                    <td>Shipper</td>
-                                    <td>:</td>
-                                    <td id="shipper"></td>
-                                </tr>
-                                <tr>
-                                    <td>Consignee</td>
-                                    <td>:</td>
-                                    <td id="consignee"></td>
-                                </tr>
-                                <tr>
-                                    <td>Notify Party</td>
-                                    <td>:</td>
-                                    <td id="notify"></td>
-                                </tr>
-                                <tr>
-                                    <td>Port of Loading</td>
-                                    <td>:</td>
-                                    <td id="loading"></td>
-                                </tr>
-                                <tr>
-                                    <td>Port of Discharge</td>
-                                    <td>:</td>
-                                    <td id="discharge"></td>
-                                </tr>
-                                <tr>
-                                    <td>Final of Destination</td>
-                                    <td>:</td>
-                                    <td id="destination"></td>
-                                </tr>
-                                <tr>
-                                    <td>Commodity</td>
-                                    <td>:</td>
-                                    <td id="commodity"></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3">
-                                        <p class="text-bold">PO: <span id="po"></span></p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3">
-                                        <div class="flex gap-x-4">
-                                            <p class="text-bold">MARKING: <span id="marking"></span></p>
-                                            <p class="text-bold">CERTIFICATE NO: <span id="certificate_no"></span></p>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Net Weight</td>
-                                    <td>:</td>
-                                    <td id="total_net_weight"></td>
-                                </tr>
-                                <tr>
-                                    <td>Gross Weight</td>
-                                    <td>:</td>
-                                    <td id="total_gross_weight"></td>
-                                </tr>
-                                <tr>
-                                    <td>Measurement</td>
-                                    <td>:</td>
-                                    <td id="measurement"></td>
-                                </tr>
-                                <tr>
-                                    <td>Container No</td>
-                                    <td>:</td>
-                                    <td id="container_no"></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div>
+                            <p>We request you to book shipment on our behalf with the following specifications.</p>
+                        </div>
+                        <div>
+                            <table id="shippingTable">
+                                <tbody>
+                                    <tr>
+                                        <td>Shipped by</td>
+                                        <td>:</td>
+                                        <td id="shipped"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Shipper</td>
+                                        <td>:</td>
+                                        <td id="shipper"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Consignee</td>
+                                        <td>:</td>
+                                        <td id="consignee"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Notify Party</td>
+                                        <td>:</td>
+                                        <td id="notify"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Port of Loading</td>
+                                        <td>:</td>
+                                        <td id="loading"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Port of Discharge</td>
+                                        <td>:</td>
+                                        <td id="discharge"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Final of Destination</td>
+                                        <td>:</td>
+                                        <td id="destination"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Commodity</td>
+                                        <td>:</td>
+                                        <td id="commodity"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <p class="text-bold">PO: <span id="po"></span></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <div class="flex gap-x-4">
+                                                <p class="text-bold">MARKING: <span id="marking"></span></p>
+                                                <p class="text-bold">CERTIFICATE NO: <span id="certificate_no"></span></p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Net Weight</td>
+                                        <td>:</td>
+                                        <td id="total_net_weight"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gross Weight</td>
+                                        <td>:</td>
+                                        <td id="total_gross_weight"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Measurement</td>
+                                        <td>:</td>
+                                        <td id="measurement"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Container No</td>
+                                        <td>:</td>
+                                        <td id="container_no"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="flex justify-end">
+                            <p class="text-bold">STUFFING: <span id="stuffing"></span></p>
+                        </div>
                     </div>
-                    <div class="flex justify-end">
-                        <p>STUFFING: <span id="stuffing"></span></p>
-                    </div>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow">
+                        Simpan
+                    </button>
                 </div>
-            </div>
+            </form>
         </main>
-        <footer class="footer-background">
-
+        
+        <footer>
+            <img src="{{ asset('/assets/export/footer.png')}}" alt="">
         </footer>
     </section>
 
@@ -188,6 +194,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @push('scripts')
         <script>
+            document.getElementById('exportForm').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.target.type !== 'textarea') {
+                    e.preventDefault();
+                }
+            });
             function showSuccess(message) {
                 Swal.fire({
                     title: 'Success!',
@@ -228,8 +239,8 @@
                         console.log('Success:', response);
                         console.log('Success:', response.details);
                         var shipped = `<br>
-                            ETD: <input type="date" name="etd" class="w-[120px] border-0 border-b border-black text-center bg-transparent focus:outline-none p-0 leading-tight no-spinner"> - 
-                            ETA: <input type="date" name="eta" class="w-[120px] border-0 border-b border-black text-center bg-transparent focus:outline-none p-0 leading-tight no-spinner">
+                            ETD: <input type="date" name="etd" class="w-[120px] border-0 border-b border-black text-center bg-transparent focus:outline-none p-0 leading-tight no-spinner" value="${response.etd ?? ''}" required> - 
+                            ETA: <input type="date" name="eta" class="w-[120px] border-0 border-b border-black text-center bg-transparent focus:outline-none p-0 leading-tight no-spinner" value="${response.eta ?? ''}" required>
                         `;
                         var shipper = `PT. SINAR MEADOW INTERNATIONAL INDONESIA <br>
                         JL. PULO AYANG 1/6, K.I PULO GADUNG, JATINEGARA, CAKUNG <br>
@@ -256,7 +267,7 @@
 
                         var totalNetWeight = 0;
                         var commodityList = response.details;
-                        let commodity = '<ul><li><input type="text" name="commodity" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner"></li>';
+                        let commodity = `<ul><li><input type="text" name="commodity" class="border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner" value="${response.commodity ?? ''}" required></li>`;
                         commodityList.forEach(item => {
                             var netWeightTon = item.net_weight / 1000;
                             commodity += `<li>
@@ -276,24 +287,24 @@
                         $('#destination').text(destination);
                         $('#commodity').html(commodity);
 
-                        var po = `<input type="text" name="po" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner">`;
+                        var po = response.so_po ?? '';
                         $('#po').html(po);
 
-                        var marking = `<input type="text" name="marking" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner">`;
-                        var certificate_no = `<input type="text" name="certificate_no" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner">`;
+                        var marking = `<input type="text" name="marking" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner" value="${response.marking ?? ''}" required>`;
+                        var certificate_no = `<input type="text" name="certificate_no" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner" value="${response.certificate_no ?? ''}" required>`;
                         $('#marking').html(marking);
                         $('#certificate_no').html(certificate_no);
 
                         var total_net_weight = `${(totalNetWeight*1000).toLocaleString('id-ID')} KGS`;
-                        var total_gross_weight = `<input type="number" name="total_gross_weight" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner"> KGS`;
-                        var measurement = `<input type="number" name="measurement" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner"> KGS`;
-                        var container_no = `<input type="text" name="container_no" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner">`;
+                        var total_gross_weight = `<input type="text" name="total_gross_weight" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner" onInput="formatNumberInput(this)" value="${response.total_gross ?? ''}" required> KGS`;
+                        var measurement = `<input type="text" name="measurement" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner" onInput="formatNumberInput(this)" value="${response.measurement ?? ''}" required> M3`;
+                        var container_no = `<input type="text" name="container_no" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner" value="${response.container_no ?? ''}" required>`;
                         $('#total_net_weight').text(total_net_weight);
                         $('#total_gross_weight').html(total_gross_weight);
                         $('#measurement').html(measurement);
                         $('#container_no').html(container_no);
 
-                        var stuffing = `<input type="date" name="stuffing" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner">`;
+                        var stuffing = `<input type="date" name="stuffing" class="w-[120px] border-0 border-b border-black bg-transparent focus:outline-none p-0 leading-tight no-spinner" value="${response.stuffing}" required>`;
                         $('#stuffing').html(stuffing);
                     },
                     error: function(xhr, status, error) {
@@ -313,6 +324,68 @@
                 // }
             });
 
+            function formatNumberInput(input) {
+                // Ambil hanya angka dan koma
+                let value = input.value.replace(/[^0-9,]/g, '');
+
+                // Jika ada lebih dari satu koma, ambil hanya yang pertama
+                let parts = value.split(',');
+                if (parts.length > 2) {
+                    value = parts[0] + ',' + parts[1];
+                }
+
+                // Ganti koma dengan titik untuk parsing float
+                let number = parseFloat(value.replace(',', '.'));
+
+                // Jika hasil parsing adalah angka, format ke locale Indonesia
+                if (!isNaN(number)) {
+                    // Pisahkan bagian desimal jika ada
+                    let [integer, decimal] = value.split(',');
+                    let formatted = parseInt(integer, 10).toLocaleString('id-ID');
+                    if (decimal !== undefined) {
+                        formatted += ',' + decimal;
+                    }
+                    input.value = formatted;
+                } else {
+                    input.value = '';
+                }
+            }
+
+
+            document.getElementById('exportForm').addEventListener('submit', function(e) {
+                e.preventDefault(); // Cegah submit standar
+
+                let form = this;
+                let formData = new FormData(form);
+
+                $.ajax({
+                    url: form.action,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function(data) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: data.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    },
+                    error: function(xhr) {
+                        var message = xhr.responseJSON.error;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal Menyimpan',
+                            text: message
+                        });
+                    }
+                });
+            });
 
 
             // Penanganan pesan sukses

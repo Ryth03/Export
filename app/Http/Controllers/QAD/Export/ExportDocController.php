@@ -6,12 +6,81 @@ use App\Http\Controllers\Controller;
 use App\Models\QAD\Export\ExportDoc;
 use App\Models\QAD\Export\ExportDocDetail;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class ExportDocController extends Controller
 {
     public function index()
     {
         return view('page.dataDashboard.export-index');
+    }
+
+    public function store(Request $request)
+    {   
+        // Mulai transaction untuk memastikan integritas data
+        DB::beginTransaction();
+
+        try{
+            $validatedData = $request->validate([
+                'no' => 'required|string|max:255',
+                'etd' => 'required|date',
+                'eta' => 'required|date',
+                'commodity' => 'required|string|max:255',
+                'marking' => 'required|string|max:255',
+                'certificate_no' => 'required|string|max:255',
+                'total_gross_weight' => 'required|string|max:255',
+                'measurement' => 'required|string|max:255',
+                'container_no' => 'required|string|max:255',
+                'stuffing' => 'required|date'
+            ]);
+
+            // Simpan data ke database
+            $no = 'ESM' . $request->input('no');
+            $exportDoc = ExportDoc::where('so_nbr', $no)->first();
+            if (!$exportDoc) { // Jika tidak ada exportDoc dengan nomor tersebut, throw exception
+                throw new \Exception('Export not found for number: ' . $request->input('no'));
+            }
+
+            // Ambil input dari request
+            $gross = $request->input('total_gross_weight');
+            $gross = str_replace('.', '', $gross);
+            $gross = str_replace(',', '.', $gross);
+
+            $measurement = $request->input('measurement');
+            $measurement = str_replace('.', '', $measurement);
+            $measurement = str_replace(',', '.', $measurement);
+            // Konversi ke float
+            // $gross = floatval($gross);
+
+            $exportDoc->etd = $request->input('etd');
+            $exportDoc->eta = $request->input('eta');
+            $exportDoc->commodity = $request->input('commodity');
+            $exportDoc->marking = $request->input('marking');
+            $exportDoc->certificate_no = $request->input('certificate_no');
+            $exportDoc->total_gross = $gross;
+            $exportDoc->total_net = $exportDoc->details->sum('net_weight');
+            $exportDoc->measurement = $measurement;
+            $exportDoc->container_no = $request->input('container_no');
+            $exportDoc->stuffing = $request->input('stuffing');
+            $exportDoc->save();
+
+            // Commit transaction jika semua berhasil
+            DB::commit();
+            // Jika berhasil, kembalikan response sukses
+            return response()->json(['message' => 'Data berhasil disimpan.'], 200);
+        } catch (\Exception $e) {
+            // Jika validasi gagal, rollback transaction dan kembalikan error
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    // Get data from database
+    public function getData()
+    {
+        $exportDoc = ExportDoc::all();
+        return response()->json($exportDoc);
     }
 
     // GET DATA EXPORT
@@ -134,5 +203,46 @@ class ExportDocController extends Controller
         return redirect()->back();
     }
 
+
+    public function print($no)
+    {
+        $exportDoc = ExportDoc::with('details')
+                    ->where('so_nbr', 'ESM1393')
+                    ->first();
+
+        // Gabungkan field consignee
+        $consignee = $exportDoc->ad_sort;
+        $consignee .= $exportDoc->ad_line1 ? '<br>' . $exportDoc->ad_line1 : '';
+        $consignee .= $exportDoc->ad_line2 ? '<br>' . $exportDoc->ad_line2 : '';
+        $consignee .= $exportDoc->ad_line3 ? '<br>' . $exportDoc->ad_line3 : '';
+        $consignee .= $exportDoc->ad_phone ? '. TEL: ' . $exportDoc->ad_phone : '';
+        $consignee .= $exportDoc->ad_phone2 ? '. TEL2: ' . $exportDoc->ad_phone2 : '';
+        $consignee .= $exportDoc->ad_fax ? '. FAX: ' . $exportDoc->ad_fax : '';
+        $consignee .= $exportDoc->ad_fax2 ? '. FAX2: ' . $exportDoc->ad_fax2 : '';
+        $exportDoc->consignee = $consignee;
+
+        // Gabungkan field consignee
+        $notify = $exportDoc->ad_sort;
+        $notify .= $exportDoc->ad_line1 ? '<br>' . $exportDoc->ad_line1 : '';
+        $notify .= $exportDoc->ad_line2 ? '<br>' . $exportDoc->ad_line2 : '';
+        $notify .= $exportDoc->ad_line3 ? '<br>' . $exportDoc->ad_line3 : '';
+        $notify .= $exportDoc->ad_phone ? '. TEL: ' . $exportDoc->ad_phone : '';
+        $notify .= $exportDoc->ad_phone2 ? '. TEL2: ' . $exportDoc->ad_phone2 : '';
+        $notify .= $exportDoc->ad_fax ? '. FAX: ' . $exportDoc->ad_fax : '';
+        $notify .= $exportDoc->ad_fax2 ? '. FAX2: ' . $exportDoc->ad_fax2 : '';
+        $exportDoc->notify = $notify;
+
+        // Hitung total net_weight
+        $total_net_weight = $exportDoc->details->sum('net_weight');
+        $exportDoc->total_net_weight = $total_net_weight;
+
+        // Hitung total gross_weight
+        $total_gross_weight = $exportDoc->details->sum('gross_weight');
+        $exportDoc->total_net_weight = $total_net_weight;
+        
+        // $pdf = Pdf::loadView('page.dataDashboard.export-print', compact('exportDocs'));
+        // return $pdf->stream('export-docs.pdf');
+        return view('page.export.printPage', compact('exportDoc'));
+    }
     // END OF FUNCTION GET DATA EXPORT
 }

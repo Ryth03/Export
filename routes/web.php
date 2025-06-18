@@ -73,6 +73,10 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     /* Export */
     Route::get('/dashboard-export', [ExportDocController::class, 'index'])->name('dashboard.export');
+    Route::get('/exportData', [ExportDocController::class, 'getData'])->name('dashboard.export.get');
+    Route::get('/exportPrint/{no}', [ExportDocController::class, 'print'])->name('export.print');
+
+    Route::POST('/exportStore', [ExportDocController::class, 'store'])->name('export.store');
     Route::POST('/export', [ExportDocController::class, 'getSoExport'])->name('export.get');
     /* Dashboard */
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
