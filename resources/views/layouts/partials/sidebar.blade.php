@@ -11,12 +11,10 @@
         <li class="{{ request()->is('dashboard') ? 'current' : '' }}"><a href="{{ route('dashboard') }}"
                 style="font-size: 18px;"><i data-feather="home" style="width: 18px; height: 18px;"><span
                         class="path1"></span><span class="path2"></span></i>Dashboard</a>
-            <ul>
-                <li><a href="{{ route('dashboard.export') }}"
-                        class="{{ request()->is('dashboard/dashboard-export') ? 'current' : '' }}"><i
-                            class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dashboard
-                        Export</a></li>
-            </ul>
+        </li>
+        <li class="{{ request()->is('export') ? 'current' : '' }}"><a href="{{ route('export.list') }}"
+                style="font-size: 18px;"><i data-feather="upload" style="width: 18px; height: 18px;"><span
+                        class="path1"></span><span class="path2"></span></i>Export</a>
         </li>
         <li><a href="#" style="font-size: 18px;" class="{{ request()->is('dashboard/*') ? 'current' : '' }}"><i
                     data-feather="database" style="width: 18px; height: 18px;"></i>Data Dashboard</a>

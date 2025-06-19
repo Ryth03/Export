@@ -72,12 +72,13 @@ Route::get('/', function () {
 
 Route::middleware('auth')->group(function () {
     /* Export */
-    Route::get('/dashboard-export', [ExportDocController::class, 'index'])->name('dashboard.export');
+    Route::get('/export/create', [ExportDocController::class, 'index'])->name('export.index');
+    Route::get('/export', [ExportDocController::class, 'list'])->name('export.list');
     Route::get('/exportData', [ExportDocController::class, 'getData'])->name('dashboard.export.get');
     Route::get('/exportPrint/{no}', [ExportDocController::class, 'print'])->name('export.print');
 
     Route::POST('/exportStore', [ExportDocController::class, 'store'])->name('export.store');
-    Route::POST('/export', [ExportDocController::class, 'getSoExport'])->name('export.get');
+    Route::POST('/getExport', [ExportDocController::class, 'getSoExport'])->name('export.get');
     /* Dashboard */
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard-finance', [DashboardController::class, 'index-finance'])->name('dashboard-finance');

@@ -13,7 +13,12 @@ class ExportDocController extends Controller
 {
     public function index()
     {
-        return view('page.dataDashboard.export-index');
+        return view('page.export.index');
+    }
+
+    public function list()
+    {
+        return view('page.export.list');
     }
 
     public function store(Request $request)
@@ -32,7 +37,10 @@ class ExportDocController extends Controller
                 'total_gross_weight' => 'required|string|max:255',
                 'measurement' => 'required|string|max:255',
                 'container_no' => 'required|string|max:255',
-                'stuffing' => 'required|date'
+                'stuffing' => 'required|date',
+                'gross' => 'required|array',
+                'gross.*' => 'required|string|max:255',
+                'batch_no' => 'required|string|max:255',
             ]);
 
             // Simpan data ke database
@@ -46,23 +54,34 @@ class ExportDocController extends Controller
             $gross = $request->input('total_gross_weight');
             $gross = str_replace('.', '', $gross);
             $gross = str_replace(',', '.', $gross);
+            $gross = floatval($gross);
 
             $measurement = $request->input('measurement');
             $measurement = str_replace('.', '', $measurement);
             $measurement = str_replace(',', '.', $measurement);
-            // Konversi ke float
-            // $gross = floatval($gross);
+            $measurement = floatval($measurement);
 
-            $exportDoc->etd = $request->input('etd');
-            $exportDoc->eta = $request->input('eta');
-            $exportDoc->commodity = $request->input('commodity');
-            $exportDoc->marking = $request->input('marking');
-            $exportDoc->certificate_no = $request->input('certificate_no');
+            $exportDoc->etd = $validatedData['etd'];
+            $exportDoc->eta = $validatedData['eta'];
+            $exportDoc->commodity = $validatedData['commodity'];
+            $exportDoc->marking = $validatedData['marking'];
+            $exportDoc->certificate_no = $validatedData['certificate_no'];
             $exportDoc->total_gross = $gross;
-            $exportDoc->total_net = $exportDoc->details->sum('net_weight');
             $exportDoc->measurement = $measurement;
-            $exportDoc->container_no = $request->input('container_no');
-            $exportDoc->stuffing = $request->input('stuffing');
+            $exportDoc->container_no = $validatedData['container_no'];
+            $exportDoc->stuffing = $validatedData['stuffing'];
+            $exportDoc->batch_no = $validatedData['batch_no'];
+
+            foreach ($validatedData['gross'] as $index => $grossValue) {
+                if (isset($exportDoc->details[$index])) {
+                    $detail = $exportDoc->details[$index];
+                    $grossWeight = str_replace('.', '', $grossValue);
+                    $grossWeight = str_replace(',', '.', $grossWeight);
+                    $detail->gross_weight = floatval($grossWeight);
+                    $detail->save();
+                }
+            }
+
             $exportDoc->save();
 
             // Commit transaction jika semua berhasil
@@ -176,6 +195,7 @@ class ExportDocController extends Controller
             $exportDoc->ad_fax = (string) $first->ad_fax;
             $exportDoc->ad_fax2 = (string) $first->ad_fax2;
             $exportDoc->ship_to_name = (string) $first->ship_to_name;
+            $exportDoc->total_net = $exportDoc->details->sum('net_weight');
             $exportDoc->save();
 
             // Hapus detail lama untuk so_nbr ini (opsional, jika ingin replace)
@@ -206,43 +226,57 @@ class ExportDocController extends Controller
 
     public function print($no)
     {
-        $exportDoc = ExportDoc::with('details')
-                    ->where('so_nbr', 'ESM1393')
-                    ->first();
+        try {
+            $exportDoc = ExportDoc::with('details')
+                        ->where('so_nbr', $no)
+                        ->first();
+            if(!$exportDoc) {
+                throw new \Exception('Export document not found for number: ' . $no);
+            }
+            foreach ($exportDoc->details as $detail) {
+                if (is_null($detail->gross_weight) || $detail->gross_weight === '') {
+                    throw new \Exception('Terdapat gross_weight yang kosong.');
+                }
+            }
 
-        // Gabungkan field consignee
-        $consignee = $exportDoc->ad_sort;
-        $consignee .= $exportDoc->ad_line1 ? '<br>' . $exportDoc->ad_line1 : '';
-        $consignee .= $exportDoc->ad_line2 ? '<br>' . $exportDoc->ad_line2 : '';
-        $consignee .= $exportDoc->ad_line3 ? '<br>' . $exportDoc->ad_line3 : '';
-        $consignee .= $exportDoc->ad_phone ? '. TEL: ' . $exportDoc->ad_phone : '';
-        $consignee .= $exportDoc->ad_phone2 ? '. TEL2: ' . $exportDoc->ad_phone2 : '';
-        $consignee .= $exportDoc->ad_fax ? '. FAX: ' . $exportDoc->ad_fax : '';
-        $consignee .= $exportDoc->ad_fax2 ? '. FAX2: ' . $exportDoc->ad_fax2 : '';
-        $exportDoc->consignee = $consignee;
+            // Gabungkan field consignee
+            $consignee = $exportDoc->ad_sort;
+            $consignee .= $exportDoc->ad_line1 ? '<br>' . $exportDoc->ad_line1 : '';
+            $consignee .= $exportDoc->ad_line2 ? '<br>' . $exportDoc->ad_line2 : '';
+            $consignee .= $exportDoc->ad_line3 ? '<br>' . $exportDoc->ad_line3 : '';
+            $consignee .= $exportDoc->ad_phone ? '. TEL: ' . $exportDoc->ad_phone : '';
+            $consignee .= $exportDoc->ad_phone2 ? '. TEL2: ' . $exportDoc->ad_phone2 : '';
+            $consignee .= $exportDoc->ad_fax ? '. FAX: ' . $exportDoc->ad_fax : '';
+            $consignee .= $exportDoc->ad_fax2 ? '. FAX2: ' . $exportDoc->ad_fax2 : '';
+            $exportDoc->consignee = $consignee;
 
-        // Gabungkan field consignee
-        $notify = $exportDoc->ad_sort;
-        $notify .= $exportDoc->ad_line1 ? '<br>' . $exportDoc->ad_line1 : '';
-        $notify .= $exportDoc->ad_line2 ? '<br>' . $exportDoc->ad_line2 : '';
-        $notify .= $exportDoc->ad_line3 ? '<br>' . $exportDoc->ad_line3 : '';
-        $notify .= $exportDoc->ad_phone ? '. TEL: ' . $exportDoc->ad_phone : '';
-        $notify .= $exportDoc->ad_phone2 ? '. TEL2: ' . $exportDoc->ad_phone2 : '';
-        $notify .= $exportDoc->ad_fax ? '. FAX: ' . $exportDoc->ad_fax : '';
-        $notify .= $exportDoc->ad_fax2 ? '. FAX2: ' . $exportDoc->ad_fax2 : '';
-        $exportDoc->notify = $notify;
+            // Gabungkan field consignee
+            $notify = $exportDoc->ad_sort;
+            $notify .= $exportDoc->ad_line1 ? '<br>' . $exportDoc->ad_line1 : '';
+            $notify .= $exportDoc->ad_line2 ? '<br>' . $exportDoc->ad_line2 : '';
+            $notify .= $exportDoc->ad_line3 ? '<br>' . $exportDoc->ad_line3 : '';
+            $notify .= $exportDoc->ad_phone ? '. TEL: ' . $exportDoc->ad_phone : '';
+            $notify .= $exportDoc->ad_phone2 ? '. TEL2: ' . $exportDoc->ad_phone2 : '';
+            $notify .= $exportDoc->ad_fax ? '. FAX: ' . $exportDoc->ad_fax : '';
+            $notify .= $exportDoc->ad_fax2 ? '. FAX2: ' . $exportDoc->ad_fax2 : '';
+            $exportDoc->notify = $notify;
 
-        // Hitung total net_weight
-        $total_net_weight = $exportDoc->details->sum('net_weight');
-        $exportDoc->total_net_weight = $total_net_weight;
+            // Hitung total net_weight
+            $total_net_weight = $exportDoc->details->sum('net_weight');
+            $exportDoc->total_net_weight = $total_net_weight;
 
-        // Hitung total gross_weight
-        $total_gross_weight = $exportDoc->details->sum('gross_weight');
-        $exportDoc->total_net_weight = $total_net_weight;
-        
-        // $pdf = Pdf::loadView('page.dataDashboard.export-print', compact('exportDocs'));
-        // return $pdf->stream('export-docs.pdf');
-        return view('page.export.printPage', compact('exportDoc'));
+            // Hitung total gross_weight
+            $total_gross_weight = $exportDoc->details->sum('gross_weight');
+            $exportDoc->total_net_weight = $total_net_weight;
+            
+            // $pdf = Pdf::loadView('page.export.printPage', compact('exportDoc'));
+            // return $pdf->download('export-docs.pdf');
+            return view('page.export.printPage3', compact('exportDoc'));
+            
+        } catch (\Exception $e) {
+            // Jika validasi gagal, kembalikan error
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
     // END OF FUNCTION GET DATA EXPORT
 }

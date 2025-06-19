@@ -30,9 +30,9 @@ return new class extends Migration
             $table->string('commodity')->nullable();
             $table->string('marking')->nullable();
             $table->string('certificate_no')->nullable();
-            $table->string('total_gross')->nullable();
-            $table->string('total_net')->nullable();
-            $table->string('measurement')->nullable();
+            $table->float('total_gross')->nullable();
+            $table->float('total_net')->nullable();
+            $table->float('measurement')->nullable();
             $table->string('container_no')->nullable();
             $table->string('batch_no')->nullable();
             $table->string('etd')->nullable();
