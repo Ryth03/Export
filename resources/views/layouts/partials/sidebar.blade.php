@@ -12,7 +12,7 @@
                 style="font-size: 18px;"><i data-feather="home" style="width: 18px; height: 18px;"><span
                         class="path1"></span><span class="path2"></span></i>Dashboard</a>
         </li>
-        <li class="{{ request()->is('export') ? 'current' : '' }}"><a href="{{ route('export.list') }}"
+        <li class="{{ request()->is('export') || request()->is('export/*') ? 'current' : '' }}"><a href="{{ route('export.list') }}"
                 style="font-size: 18px;"><i data-feather="upload" style="width: 18px; height: 18px;"><span
                         class="path1"></span><span class="path2"></span></i>Export</a>
         </li>
