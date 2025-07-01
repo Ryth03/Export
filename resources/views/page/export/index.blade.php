@@ -73,10 +73,12 @@
                     </div>
                 </div>
                 <div class="flex justify-around">  
-                    <main class="border border-black">  
+                    <main class="card border border-black">  
                         <div class="flex flex-col items-center">
-                            <h2 class="text-2xl">SHIPPING INSTRUCTION</h2>
-                            <div>
+                            <div class="card-title mt-3">
+                                <h2 class="text-2xl">SHIPPING INSTRUCTION</h2>
+                            </div>
+                            <div class="card-body">
                                 <div>
                                     <p>We request you to book shipment on our behalf with the following specifications.</p>
                                 </div>
@@ -166,10 +168,12 @@
                         </div>
                     </main>
                     
-                    <main class="border border-black">
+                    <main class="card border border-black">
                         <div class="flex flex-col items-center">
-                            <h2 class="text-2xl">PACKING LIST</h2>
-                            <table id="packingTable" class="table table-bordered">
+                            <div class="card-title mt-3">
+                                <h2 class="text-2xl">PACKING LIST</h2>
+                            </div>
+                            <table id="packingTable" class="table table-bordered card-body">
                                 <tbody>
                                     <tr>
                                         <td rowspan="2" colspan="4">
@@ -559,7 +563,7 @@
                         });
                         setTimeout(function() {
                             window.location.href = data.redirect;
-                        }, 4000); // 4000 ms = 4 detik
+                        }, 3000);
                     },
                     error: function(xhr) {
                         var message = xhr.responseJSON.error;

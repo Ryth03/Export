@@ -47,6 +47,9 @@
             text-align: left;
             padding: 2px 5px;
         }
+        #packingTable td{
+            font-size: 12px;
+        }
         .text-bold {
             font-weight: bold;
         }
@@ -86,6 +89,7 @@
         .border-0 { border: 0; }
         .border-b { border-bottom: 1px solid #000; }
         .text-center { text-align: center; }
+        .text-right { text-align: right; }
         .bg-transparent { background: transparent; }
         .p-0 { padding: 0; }
         .leading-tight { line-height: 1.25; }
@@ -134,7 +138,8 @@
 </head>
 <body>
 @php
-    $chunks = $exportDoc->details->chunk(3);
+    $chunks = $exportDoc->details->chunk(4);
+    $count = 1;
 @endphp
 
 @foreach($chunks as $i => $chunk)
@@ -321,18 +326,21 @@
                                 </tr>
                                 @foreach($chunk as $item)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td class="text-center">{{ $count }}</td>
                                     <td>{{ $item['pt_desc'] }} ({{ $item['sod_part'] }})</td>
                                     <td>{{ $item['sod_qty_ord'] }} {{ $item['pt_um'] }}</td>
                                     <td>{{ number_format($item['net_weight'] / 1000, 2, ',', '.') }} M/TONS</td>
-                                    <td colspan="2">{{ number_format($item['net_weight'], 2, ',', '.') }}</td>
-                                    <td colspan="2">{{ number_format($item['gross_weight'] ?? 0, 2, ',', '.') }}</td>
+                                    <td colspan="2" class="text-right">{{ number_format($item['net_weight'], 2, ',', '.') }}</td>
+                                    <td colspan="2" class="text-right">{{ number_format($item['gross_weight'] ?? 0, 2, ',', '.') }}</td>
                                 </tr>
+                                @php
+                                 $count++;
+                                @endphp
                                 @endforeach
                                 <tr>
                                     <td colspan="4"></td>
-                                    <td colspan="2">{{ number_format($exportDoc->total_net, 2, ',', '.') }}</td>
-                                    <td colspan="2">{{ number_format($exportDoc->total_gross, 2, ',', '.') }}</td>
+                                    <td colspan="2" class="text-right">{{ number_format($exportDoc->total_net, 2, ',', '.') }}</td>
+                                    <td colspan="2" class="text-right">{{ number_format($exportDoc->total_gross, 2, ',', '.') }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="4">
