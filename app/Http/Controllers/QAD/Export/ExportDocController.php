@@ -7,6 +7,7 @@ use App\Models\QAD\Export\ExportDoc;
 use App\Models\QAD\Export\ExportDocDetail;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\Snappy\Facades\SnappyPdf;
 use Illuminate\Support\Facades\DB;
 
 class ExportDocController extends Controller
@@ -226,6 +227,7 @@ class ExportDocController extends Controller
 
     public function print($no)
     {
+        // set_time_limit(120); // atur maksimal jadi 5 menit
         try {
             $exportDoc = ExportDoc::with('details')
                         ->where('so_nbr', $no)
@@ -267,11 +269,41 @@ class ExportDocController extends Controller
 
             // Hitung total gross_weight
             $total_gross_weight = $exportDoc->details->sum('gross_weight');
-            $exportDoc->total_net_weight = $total_net_weight;
+            $exportDoc->total_gross_weight = $total_gross_weight;
             
-            // $pdf = Pdf::loadView('page.export.printPage', compact('exportDoc'));
+
+            // Export-{{so_nbr}}-name.pdf
+            return view('page.export.printPage', compact('exportDoc'));
+            // Export PDF
+            // $pdf = Pdf::loadView('page.export.printPage3', compact('exportDoc'));
             // return $pdf->download('export-docs.pdf');
-            return view('page.export.printPage3', compact('exportDoc'));
+
+            // SnappyPDF
+            // $html = view('page.export.printPage3', ['exportDoc' => $exportDoc])->render();
+
+            // $pdf = SnappyPdf::loadHTML($html);
+
+            // return $pdf->download('export-docs.pdf');
+
+
+
+            // DOMPDF
+            // $fileName = 'Export-' . $exportDoc->so_nbr . '-'  . $exportDoc->ad_name . '.pdf';
+
+            // $cacheKey = 'export_pdf_' . $exportDoc->so_nbr;
+            // if (cache()->has($cacheKey)) {
+            //     $pdfContent = cache()->get($cacheKey);
+            // } else {
+            //     $pdf = Pdf::loadView('page.export.printPage3', compact('exportDoc'));
+            //     $pdfContent = $pdf->output();
+            //     cache()->put($cacheKey, $pdfContent, now()->addMinutes(10));
+            //     // cache()->put($cacheKey, $pdfContent, now()->addHours(24));
+            // }
+
+            // return response()->streamDownload(function () use ($pdfContent) {
+            //     echo $pdfContent;
+            // }, $fileName, ['Content-Type' => 'application/pdf']);
+
             
         } catch (\Exception $e) {
             // Jika validasi gagal, kembalikan error

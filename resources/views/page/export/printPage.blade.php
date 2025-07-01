@@ -59,6 +59,9 @@
         .items-center {
             align-items: center;
         }
+        .justify-center {
+            justify-content: center;
+        }
         .justify-end {
             justify-content: flex-end;
         }
@@ -93,6 +96,13 @@
         }
         .no-spinner {
             -moz-appearance: textfield;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-bordered, .table-bordered td, .table-bordered th {
+            border: 1px solid #333;
         }
         @page {
             size: A4;
@@ -252,5 +262,121 @@
         </footer>
     </section>
 @endforeach
+
+@foreach($chunks as $i => $chunk)
+    <section class="print-page">
+        <main class="content main-background">
+            <header class="w-50 h-32 mr-auto pt-14">
+                <img src="{{ asset('assets/export/logo.png') }}" style="max-width:100%; height:auto; display:block;">
+            </header>
+            <div class="flex flex-col items-center">
+                <h4 class="">PACKING LIST</h4>
+                <div class="text-sm">
+                    <div>
+                        <table id="packingTable" class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td rowspan="2" colspan="4">
+                                        <p class="text-bold">NOTIFY PARTY:</p>
+                                        <p>{!! $exportDoc['notify'] ?? '' !!}</p>
+                                    </td>
+                                    <td colspan="2">
+                                        <p>PACKING LIST NO:</p>
+                                        <p>{{ $exportDoc['so_nbr'] ?? '' }}</p>
+                                    </td>
+                                    <td colspan="2">
+                                        <p>INVOICE NO:</p>
+                                        <p>{{ $exportDoc['so_nbr'] ?? '' }}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <p>PORT OF LOADING:</p>
+                                        <p class="text-bold">JAKARTA, INDONESIA</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <p class="text-bold">CONSIGNED TO:</p>
+                                        <p>{!! $exportDoc['consignee'] ?? '' !!}</p>
+                                    </td>
+                                    <td colspan="4">
+                                        <p>PORT OF DESTINATION:</p>
+                                        <p class="text-bold">{{ $exportDoc['ad_city'] ?? '' }}</p>
+                                    </td>
+                                </tr>
+                                <tr class="text-center">
+                                    <td>ITEM</td>
+                                    <td>DESCRIPTION</td>
+                                    <td>QTY</td>
+                                    <td>NET WEIGHT</td>
+                                    <td colspan="2">
+                                        <p>NET</p>
+                                        <p>(K G S)</p>
+                                    </td>
+                                    <td colspan="2">
+                                        <p>GROSS</p>
+                                        <p>(K G S)</p>
+                                    </td>
+                                </tr>
+                                @foreach($chunk as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item['pt_desc'] }} ({{ $item['sod_part'] }})</td>
+                                    <td>{{ $item['sod_qty_ord'] }} {{ $item['pt_um'] }}</td>
+                                    <td>{{ number_format($item['net_weight'] / 1000, 2, ',', '.') }} M/TONS</td>
+                                    <td colspan="2">{{ number_format($item['net_weight'], 2, ',', '.') }}</td>
+                                    <td colspan="2">{{ number_format($item['gross_weight'] ?? 0, 2, ',', '.') }}</td>
+                                </tr>
+                                @endforeach
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td colspan="2">{{ number_format($exportDoc->total_net, 2, ',', '.') }}</td>
+                                    <td colspan="2">{{ number_format($exportDoc->total_gross, 2, ',', '.') }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <p>BATCH NO.:</p>
+                                        <p class="text-bold">{{ $exportDoc['batch_no'] ?? '' }}</p>
+                                    </td>
+                                    <td colspan="4"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <p>CONTAINER NO. / SEAL NO.:</p>
+                                        <p>{{ $exportDoc['container_no'] ?? '' }}</p>
+                                    </td>
+                                    <td colspan="4"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">{{ $exportDoc['marking'] ?? '' }}</td>
+                                    <td colspan="4"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">CERTIFICATE NO : <span>{{ $exportDoc['certificate_no'] ?? '' }}</span></td>
+                                    <td colspan="4"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="flex justify-center">
+                        <p class="text-bold">PT. SINAR MEADOW INTERNATIONAL INDONESIA</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <img src="{{ asset('/assets/export/footer.png')}}" alt="">
+        </footer>
+    </section>
+@endforeach
+<script>
+    window.onload = function() {
+        window.print();
+        window.onafterprint = function() {
+            window.close();
+        };
+    };
+</script>
 </body>
 </html>

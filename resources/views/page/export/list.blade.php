@@ -3,12 +3,12 @@
         Export
     @endsection
     @push('css')
-        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+        {{-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.jqueryui.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.3.1/css/searchPanes.jqueryui.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/select/2.0.3/css/select.jqueryui.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.7.1/css/searchBuilder.dataTables.css">
-        <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.2/css/dataTables.dateTime.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.2/css/dataTables.dateTime.min.css"> --}}
         <style>
 
             .main-background{
@@ -61,7 +61,7 @@
             <a href="{{ route('export.index') }}" class="btn btn-success">Create</a>
         </div>
         <div class="box-body">
-            <table id="tableExport" class="!border-separate table table-bordered w-full">
+            <table id="tableExport" class="table table-striped table-bordered w-full" style="width: 100%;">
                 <thead>
                     <tr>
                         <th>No. SO</th>
@@ -77,7 +77,7 @@
     </section>
 
 
-    <script type="text/javascript" src="{{ asset('assets') }}/ajax/libs/jQuery-slimScroll/1.3.8/jquery-3.7.1.min.js"></script>
+    {{-- <script type="text/javascript" src="{{ asset('assets') }}/ajax/libs/jQuery-slimScroll/1.3.8/jquery-3.7.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script> 
     <script src = "https://cdn.datatables.net/2.0.8/js/dataTables.jqueryui.js" ></script>
@@ -88,12 +88,16 @@
     <script src="https://cdn.datatables.net/searchbuilder/1.7.1/js/dataTables.searchBuilder.js"></script>
     <script src="https://cdn.datatables.net/searchbuilder/1.7.1/js/searchBuilder.dataTables.js"></script>
     <script src="https://cdn.datatables.net/datetime/1.5.2/js/dataTables.dateTime.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 $(document).ready(function() {
                     $('#tableExport').DataTable({
+                        "lengthChange": false,
+                        "pagingType": "simple_numbers",
+                        "dom": 'Bfrtip',
+                        "buttons": ['copy', 'csv', 'excel', 'pdf', 'print'],
                         processing: true,
                         serverSide: false,
                         ajax: {
